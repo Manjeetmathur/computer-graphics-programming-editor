@@ -76,7 +76,8 @@ export default function Home() {
   }
 
   return (
-    <div className="h-screen flex flex-col md:flex-row overflow-hidden">
+    <div className="h-screen flex flex-col">
+      <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
       {/* Mobile View Toggle */}
       <div className="md:hidden flex border-b border-gray-200 bg-white">
         <button
@@ -151,6 +152,14 @@ export default function Home() {
       </div>
 
       <CodeModal shapes={shapes} isOpen={isCodeModalOpen} onClose={() => setIsCodeModalOpen(false)} />
+      </div>
+      
+      {/* Footer */}
+      <footer className="border-t border-gray-200 bg-white py-2 px-4">
+        <p className="text-xs text-gray-500 text-center">
+          Developed by <span className="font-medium text-gray-700">Manjeet Mathur</span>
+        </p>
+      </footer>
     </div>
   )
 }
