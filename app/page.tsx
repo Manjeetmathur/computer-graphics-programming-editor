@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import type { Shape, ShapeType } from '@/types/graphics'
+import { roundShapeCoordinates } from '@/lib/coordinate-utils'
 import ShapePalette from '@/components/ShapePalette'
 import PropertyEditor from '@/components/PropertyEditor'
 import ShapeList from '@/components/ShapeList'
@@ -57,8 +58,9 @@ export default function Home() {
   }
 
   const handleUpdateShape = (updatedShape: Shape) => {
-    setShapes((prev) => prev.map((s) => (s.id === updatedShape.id ? updatedShape : s)))
-    setSelectedShape(updatedShape)
+    const rounded = roundShapeCoordinates(updatedShape)
+    setShapes((prev) => prev.map((s) => (s.id === rounded.id ? rounded : s)))
+    setSelectedShape(rounded)
   }
 
   const handleSelectShape = (shape: Shape) => {

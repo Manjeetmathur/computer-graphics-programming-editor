@@ -5,6 +5,7 @@ import type { Shape } from '@/types/graphics'
 import { GraphicsRenderer } from '@/lib/graphics-renderer'
 import { isPointInShape, getShapeBounds } from '@/lib/shape-hit-detection'
 import { getShapeHandles, findHandleAtPoint, resizeShape, type Handle } from '@/lib/shape-handles'
+import { roundShapeCoordinates } from '@/lib/coordinate-utils'
 
 interface GraphicsCanvasProps {
   shapes: Shape[]
@@ -144,7 +145,7 @@ export default function GraphicsCanvas({ shapes, selectedShapeId, onSelectShape,
 
     // Handle resizing
     if (isResizing && draggedShape && resizeHandle) {
-      const updated = resizeShape(draggedShape, resizeHandle.type, point.x, point.y)
+      const updated = roundShapeCoordinates(resizeShape(draggedShape, resizeHandle.type, Math.round(point.x), Math.round(point.y)))
       onUpdateShape(updated)
       setDraggedShape(updated)
       return
@@ -208,8 +209,9 @@ export default function GraphicsCanvas({ shapes, selectedShapeId, onSelectShape,
         break
     }
 
-    onUpdateShape(updated)
-    setDraggedShape(updated)
+    const rounded = roundShapeCoordinates(updated)
+    onUpdateShape(rounded)
+    setDraggedShape(rounded)
   }
 
   const handleEnd = () => {

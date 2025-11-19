@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import type { Shape } from '@/types/graphics'
+import { roundShapeCoordinates } from '@/lib/coordinate-utils'
 
 interface PropertyEditorProps {
   shape: Shape | null
@@ -26,10 +27,31 @@ export default function PropertyEditor({ shape, onUpdate }: PropertyEditorProps)
   const handleChange = (field: string, value: number | string | Array<{ x: number; y: number }>) => {
     if (!localShape) return
 
-    const updated = {
+    let updated = {
       ...localShape,
       [field]: Array.isArray(value) ? value : (typeof value === 'string' && !isNaN(Number(value)) ? Number(value) : value),
     } as Shape
+
+    // Round coordinates to integers
+    if (Array.isArray(value)) {
+      // For polygon points
+      updated = {
+        ...updated,
+        points: (value as Array<{ x: number; y: number }>).map((p) => ({
+          x: Math.round(p.x),
+          y: Math.round(p.y),
+        })),
+      } as Shape
+    } else if (typeof value === 'number' && (field.includes('x') || field.includes('y') || field.includes('radius'))) {
+      // For coordinate and radius fields
+      updated = {
+        ...updated,
+        [field]: Math.round(value),
+      } as Shape
+    }
+
+    // Round all coordinates
+    updated = roundShapeCoordinates(updated)
 
     setLocalShape(updated)
     onUpdate(updated)
@@ -44,6 +66,7 @@ export default function PropertyEditor({ shape, onUpdate }: PropertyEditorProps)
               <label className="block text-xs font-medium text-gray-600 mb-1">X</label>
               <input
                 type="number"
+                step="1"
                 value={localShape.x}
                 onChange={(e) => handleChange('x', e.target.value)}
                 className="w-full px-2 py-1.5 text-xs sm:text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 touch-manipulation"
@@ -53,6 +76,7 @@ export default function PropertyEditor({ shape, onUpdate }: PropertyEditorProps)
               <label className="block text-xs font-medium text-gray-600 mb-1">Y</label>
               <input
                 type="number"
+                step="1"
                 value={localShape.y}
                 onChange={(e) => handleChange('y', e.target.value)}
                 className="w-full px-2 py-1.5 text-xs sm:text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 touch-manipulation"
@@ -68,6 +92,7 @@ export default function PropertyEditor({ shape, onUpdate }: PropertyEditorProps)
               <label className="block text-xs font-medium text-gray-600 mb-1">X1</label>
               <input
                 type="number"
+                step="1"
                 value={localShape.x1}
                 onChange={(e) => handleChange('x1', e.target.value)}
                 className="w-full px-2 py-1.5 text-xs sm:text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 touch-manipulation"
@@ -77,6 +102,7 @@ export default function PropertyEditor({ shape, onUpdate }: PropertyEditorProps)
               <label className="block text-xs font-medium text-gray-600 mb-1">Y1</label>
               <input
                 type="number"
+                step="1"
                 value={localShape.y1}
                 onChange={(e) => handleChange('y1', e.target.value)}
                 className="w-full px-2 py-1.5 text-xs sm:text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 touch-manipulation"
@@ -86,6 +112,7 @@ export default function PropertyEditor({ shape, onUpdate }: PropertyEditorProps)
               <label className="block text-xs font-medium text-gray-600 mb-1">X2</label>
               <input
                 type="number"
+                step="1"
                 value={localShape.x2}
                 onChange={(e) => handleChange('x2', e.target.value)}
                 className="w-full px-2 py-1.5 text-xs sm:text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 touch-manipulation"
@@ -95,6 +122,7 @@ export default function PropertyEditor({ shape, onUpdate }: PropertyEditorProps)
               <label className="block text-xs font-medium text-gray-600 mb-1">Y2</label>
               <input
                 type="number"
+                step="1"
                 value={localShape.y2}
                 onChange={(e) => handleChange('y2', e.target.value)}
                 className="w-full px-2 py-1.5 text-xs sm:text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 touch-manipulation"
@@ -110,6 +138,7 @@ export default function PropertyEditor({ shape, onUpdate }: PropertyEditorProps)
               <label className="block text-xs font-medium text-gray-600 mb-1">X1</label>
               <input
                 type="number"
+                step="1"
                 value={localShape.x1}
                 onChange={(e) => handleChange('x1', e.target.value)}
                 className="w-full px-2 py-1.5 text-xs sm:text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 touch-manipulation"
@@ -119,6 +148,7 @@ export default function PropertyEditor({ shape, onUpdate }: PropertyEditorProps)
               <label className="block text-xs font-medium text-gray-600 mb-1">Y1</label>
               <input
                 type="number"
+                step="1"
                 value={localShape.y1}
                 onChange={(e) => handleChange('y1', e.target.value)}
                 className="w-full px-2 py-1.5 text-xs sm:text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 touch-manipulation"
@@ -128,6 +158,7 @@ export default function PropertyEditor({ shape, onUpdate }: PropertyEditorProps)
               <label className="block text-xs font-medium text-gray-600 mb-1">X2</label>
               <input
                 type="number"
+                step="1"
                 value={localShape.x2}
                 onChange={(e) => handleChange('x2', e.target.value)}
                 className="w-full px-2 py-1.5 text-xs sm:text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 touch-manipulation"
@@ -137,6 +168,7 @@ export default function PropertyEditor({ shape, onUpdate }: PropertyEditorProps)
               <label className="block text-xs font-medium text-gray-600 mb-1">Y2</label>
               <input
                 type="number"
+                step="1"
                 value={localShape.y2}
                 onChange={(e) => handleChange('y2', e.target.value)}
                 className="w-full px-2 py-1.5 text-xs sm:text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 touch-manipulation"
@@ -152,6 +184,7 @@ export default function PropertyEditor({ shape, onUpdate }: PropertyEditorProps)
               <label className="block text-xs font-medium text-gray-600 mb-1">X</label>
               <input
                 type="number"
+                step="1"
                 value={localShape.x}
                 onChange={(e) => handleChange('x', e.target.value)}
                 className="w-full px-2 py-1.5 text-xs sm:text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 touch-manipulation"
@@ -161,6 +194,7 @@ export default function PropertyEditor({ shape, onUpdate }: PropertyEditorProps)
               <label className="block text-xs font-medium text-gray-600 mb-1">Y</label>
               <input
                 type="number"
+                step="1"
                 value={localShape.y}
                 onChange={(e) => handleChange('y', e.target.value)}
                 className="w-full px-2 py-1.5 text-xs sm:text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 touch-manipulation"
@@ -170,6 +204,7 @@ export default function PropertyEditor({ shape, onUpdate }: PropertyEditorProps)
               <label className="block text-xs font-medium text-gray-600 mb-1">Radius</label>
               <input
                 type="number"
+                step="1"
                 value={localShape.radius}
                 onChange={(e) => handleChange('radius', e.target.value)}
                 className="w-full px-2 py-1.5 text-xs sm:text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 touch-manipulation"
@@ -185,6 +220,7 @@ export default function PropertyEditor({ shape, onUpdate }: PropertyEditorProps)
               <label className="block text-xs font-medium text-gray-600 mb-1">X</label>
               <input
                 type="number"
+                step="1"
                 value={localShape.x}
                 onChange={(e) => handleChange('x', e.target.value)}
                 className="w-full px-2 py-1.5 text-xs sm:text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 touch-manipulation"
@@ -194,6 +230,7 @@ export default function PropertyEditor({ shape, onUpdate }: PropertyEditorProps)
               <label className="block text-xs font-medium text-gray-600 mb-1">Y</label>
               <input
                 type="number"
+                step="1"
                 value={localShape.y}
                 onChange={(e) => handleChange('y', e.target.value)}
                 className="w-full px-2 py-1.5 text-xs sm:text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 touch-manipulation"
@@ -203,6 +240,7 @@ export default function PropertyEditor({ shape, onUpdate }: PropertyEditorProps)
               <label className="block text-xs font-medium text-gray-600 mb-1">Radius</label>
               <input
                 type="number"
+                step="1"
                 value={localShape.radius}
                 onChange={(e) => handleChange('radius', e.target.value)}
                 className="w-full px-2 py-1.5 text-xs sm:text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 touch-manipulation"
@@ -212,6 +250,7 @@ export default function PropertyEditor({ shape, onUpdate }: PropertyEditorProps)
               <label className="block text-xs font-medium text-gray-600 mb-1">Start Angle</label>
               <input
                 type="number"
+                step="1"
                 value={localShape.startAngle}
                 onChange={(e) => handleChange('startAngle', e.target.value)}
                 className="w-full px-2 py-1.5 text-xs sm:text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 touch-manipulation"
@@ -221,6 +260,7 @@ export default function PropertyEditor({ shape, onUpdate }: PropertyEditorProps)
               <label className="block text-xs font-medium text-gray-600 mb-1">End Angle</label>
               <input
                 type="number"
+                step="1"
                 value={localShape.endAngle}
                 onChange={(e) => handleChange('endAngle', e.target.value)}
                 className="w-full px-2 py-1.5 text-xs sm:text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 touch-manipulation"
@@ -236,6 +276,7 @@ export default function PropertyEditor({ shape, onUpdate }: PropertyEditorProps)
               <label className="block text-xs font-medium text-gray-600 mb-1">X</label>
               <input
                 type="number"
+                step="1"
                 value={localShape.x}
                 onChange={(e) => handleChange('x', e.target.value)}
                 className="w-full px-2 py-1.5 text-xs sm:text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 touch-manipulation"
@@ -245,6 +286,7 @@ export default function PropertyEditor({ shape, onUpdate }: PropertyEditorProps)
               <label className="block text-xs font-medium text-gray-600 mb-1">Y</label>
               <input
                 type="number"
+                step="1"
                 value={localShape.y}
                 onChange={(e) => handleChange('y', e.target.value)}
                 className="w-full px-2 py-1.5 text-xs sm:text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 touch-manipulation"
@@ -254,6 +296,7 @@ export default function PropertyEditor({ shape, onUpdate }: PropertyEditorProps)
               <label className="block text-xs font-medium text-gray-600 mb-1">Radius X</label>
               <input
                 type="number"
+                step="1"
                 value={localShape.radiusX}
                 onChange={(e) => handleChange('radiusX', e.target.value)}
                 className="w-full px-2 py-1.5 text-xs sm:text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 touch-manipulation"
@@ -263,6 +306,7 @@ export default function PropertyEditor({ shape, onUpdate }: PropertyEditorProps)
               <label className="block text-xs font-medium text-gray-600 mb-1">Radius Y</label>
               <input
                 type="number"
+                step="1"
                 value={localShape.radiusY}
                 onChange={(e) => handleChange('radiusY', e.target.value)}
                 className="w-full px-2 py-1.5 text-xs sm:text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 touch-manipulation"
@@ -278,6 +322,7 @@ export default function PropertyEditor({ shape, onUpdate }: PropertyEditorProps)
               <label className="block text-xs font-medium text-gray-600 mb-1">X1</label>
               <input
                 type="number"
+                step="1"
                 value={localShape.x1}
                 onChange={(e) => handleChange('x1', e.target.value)}
                 className="w-full px-2 py-1.5 text-xs sm:text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 touch-manipulation"
@@ -287,6 +332,7 @@ export default function PropertyEditor({ shape, onUpdate }: PropertyEditorProps)
               <label className="block text-xs font-medium text-gray-600 mb-1">Y1</label>
               <input
                 type="number"
+                step="1"
                 value={localShape.y1}
                 onChange={(e) => handleChange('y1', e.target.value)}
                 className="w-full px-2 py-1.5 text-xs sm:text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 touch-manipulation"
@@ -296,6 +342,7 @@ export default function PropertyEditor({ shape, onUpdate }: PropertyEditorProps)
               <label className="block text-xs font-medium text-gray-600 mb-1">X2</label>
               <input
                 type="number"
+                step="1"
                 value={localShape.x2}
                 onChange={(e) => handleChange('x2', e.target.value)}
                 className="w-full px-2 py-1.5 text-xs sm:text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 touch-manipulation"
@@ -305,6 +352,7 @@ export default function PropertyEditor({ shape, onUpdate }: PropertyEditorProps)
               <label className="block text-xs font-medium text-gray-600 mb-1">Y2</label>
               <input
                 type="number"
+                step="1"
                 value={localShape.y2}
                 onChange={(e) => handleChange('y2', e.target.value)}
                 className="w-full px-2 py-1.5 text-xs sm:text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 touch-manipulation"
@@ -314,6 +362,7 @@ export default function PropertyEditor({ shape, onUpdate }: PropertyEditorProps)
               <label className="block text-xs font-medium text-gray-600 mb-1">X3</label>
               <input
                 type="number"
+                step="1"
                 value={localShape.x3}
                 onChange={(e) => handleChange('x3', e.target.value)}
                 className="w-full px-2 py-1.5 text-xs sm:text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 touch-manipulation"
@@ -323,6 +372,7 @@ export default function PropertyEditor({ shape, onUpdate }: PropertyEditorProps)
               <label className="block text-xs font-medium text-gray-600 mb-1">Y3</label>
               <input
                 type="number"
+                step="1"
                 value={localShape.y3}
                 onChange={(e) => handleChange('y3', e.target.value)}
                 className="w-full px-2 py-1.5 text-xs sm:text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 touch-manipulation"
@@ -338,6 +388,7 @@ export default function PropertyEditor({ shape, onUpdate }: PropertyEditorProps)
               <label className="block text-xs font-medium text-gray-600 mb-1">X1</label>
               <input
                 type="number"
+                step="1"
                 value={localShape.x1}
                 onChange={(e) => handleChange('x1', e.target.value)}
                 className="w-full px-2 py-1.5 text-xs sm:text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 touch-manipulation"
@@ -347,6 +398,7 @@ export default function PropertyEditor({ shape, onUpdate }: PropertyEditorProps)
               <label className="block text-xs font-medium text-gray-600 mb-1">Y1</label>
               <input
                 type="number"
+                step="1"
                 value={localShape.y1}
                 onChange={(e) => handleChange('y1', e.target.value)}
                 className="w-full px-2 py-1.5 text-xs sm:text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 touch-manipulation"
@@ -356,6 +408,7 @@ export default function PropertyEditor({ shape, onUpdate }: PropertyEditorProps)
               <label className="block text-xs font-medium text-gray-600 mb-1">X2</label>
               <input
                 type="number"
+                step="1"
                 value={localShape.x2}
                 onChange={(e) => handleChange('x2', e.target.value)}
                 className="w-full px-2 py-1.5 text-xs sm:text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 touch-manipulation"
@@ -365,6 +418,7 @@ export default function PropertyEditor({ shape, onUpdate }: PropertyEditorProps)
               <label className="block text-xs font-medium text-gray-600 mb-1">Y2</label>
               <input
                 type="number"
+                step="1"
                 value={localShape.y2}
                 onChange={(e) => handleChange('y2', e.target.value)}
                 className="w-full px-2 py-1.5 text-xs sm:text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 touch-manipulation"
@@ -380,6 +434,7 @@ export default function PropertyEditor({ shape, onUpdate }: PropertyEditorProps)
               <label className="block text-xs font-medium text-gray-600 mb-1">X</label>
               <input
                 type="number"
+                step="1"
                 value={localShape.x}
                 onChange={(e) => handleChange('x', e.target.value)}
                 className="w-full px-2 py-1.5 text-xs sm:text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 touch-manipulation"
@@ -389,6 +444,7 @@ export default function PropertyEditor({ shape, onUpdate }: PropertyEditorProps)
               <label className="block text-xs font-medium text-gray-600 mb-1">Y</label>
               <input
                 type="number"
+                step="1"
                 value={localShape.y}
                 onChange={(e) => handleChange('y', e.target.value)}
                 className="w-full px-2 py-1.5 text-xs sm:text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 touch-manipulation"
@@ -398,6 +454,7 @@ export default function PropertyEditor({ shape, onUpdate }: PropertyEditorProps)
               <label className="block text-xs font-medium text-gray-600 mb-1">Radius</label>
               <input
                 type="number"
+                step="1"
                 value={localShape.radius}
                 onChange={(e) => handleChange('radius', e.target.value)}
                 className="w-full px-2 py-1.5 text-xs sm:text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 touch-manipulation"
@@ -413,6 +470,7 @@ export default function PropertyEditor({ shape, onUpdate }: PropertyEditorProps)
               <label className="block text-xs font-medium text-gray-600 mb-1">X</label>
               <input
                 type="number"
+                step="1"
                 value={localShape.x}
                 onChange={(e) => handleChange('x', e.target.value)}
                 className="w-full px-2 py-1.5 text-xs sm:text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 touch-manipulation"
@@ -422,6 +480,7 @@ export default function PropertyEditor({ shape, onUpdate }: PropertyEditorProps)
               <label className="block text-xs font-medium text-gray-600 mb-1">Y</label>
               <input
                 type="number"
+                step="1"
                 value={localShape.y}
                 onChange={(e) => handleChange('y', e.target.value)}
                 className="w-full px-2 py-1.5 text-xs sm:text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 touch-manipulation"
@@ -431,6 +490,7 @@ export default function PropertyEditor({ shape, onUpdate }: PropertyEditorProps)
               <label className="block text-xs font-medium text-gray-600 mb-1">Radius</label>
               <input
                 type="number"
+                step="1"
                 value={localShape.radius}
                 onChange={(e) => handleChange('radius', e.target.value)}
                 className="w-full px-2 py-1.5 text-xs sm:text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 touch-manipulation"
@@ -440,6 +500,7 @@ export default function PropertyEditor({ shape, onUpdate }: PropertyEditorProps)
               <label className="block text-xs font-medium text-gray-600 mb-1">Start Angle</label>
               <input
                 type="number"
+                step="1"
                 value={localShape.startAngle}
                 onChange={(e) => handleChange('startAngle', e.target.value)}
                 className="w-full px-2 py-1.5 text-xs sm:text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 touch-manipulation"
@@ -449,6 +510,7 @@ export default function PropertyEditor({ shape, onUpdate }: PropertyEditorProps)
               <label className="block text-xs font-medium text-gray-600 mb-1">End Angle</label>
               <input
                 type="number"
+                step="1"
                 value={localShape.endAngle}
                 onChange={(e) => handleChange('endAngle', e.target.value)}
                 className="w-full px-2 py-1.5 text-xs sm:text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 touch-manipulation"
@@ -469,6 +531,7 @@ export default function PropertyEditor({ shape, onUpdate }: PropertyEditorProps)
                     <div className="flex gap-1">
                       <input
                         type="number"
+                        step="1"
                         placeholder="X"
                         value={point.x}
                         onChange={(e) => {
@@ -480,6 +543,7 @@ export default function PropertyEditor({ shape, onUpdate }: PropertyEditorProps)
                       />
                       <input
                         type="number"
+                        step="1"
                         placeholder="Y"
                         value={point.y}
                         onChange={(e) => {

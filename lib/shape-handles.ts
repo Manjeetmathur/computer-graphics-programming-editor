@@ -100,6 +100,9 @@ export function findHandleAtPoint(x: number, y: number, handles: Handle[], toler
 
 export function resizeShape(shape: Shape, handleType: string, newX: number, newY: number): Shape {
   const updated = { ...shape } as Shape
+  // Round input coordinates
+  newX = Math.round(newX)
+  newY = Math.round(newY)
 
   switch (updated.type) {
     case 'line': {
@@ -137,7 +140,7 @@ export function resizeShape(shape: Shape, handleType: string, newX: number, newY
     case 'filledCircle': {
       const circle = updated as Extract<Shape, { type: 'circle' | 'filledCircle' }>
       const dist = Math.sqrt((newX - circle.x) ** 2 + (newY - circle.y) ** 2)
-      circle.radius = Math.max(1, dist)
+      circle.radius = Math.max(1, Math.round(dist))
       break
     }
 
@@ -145,7 +148,7 @@ export function resizeShape(shape: Shape, handleType: string, newX: number, newY
     case 'pieSlice': {
       const arc = updated as Extract<Shape, { type: 'arc' | 'pieSlice' }>
       const radiusDist = Math.sqrt((newX - arc.x) ** 2 + (newY - arc.y) ** 2)
-      arc.radius = Math.max(1, radiusDist)
+      arc.radius = Math.max(1, Math.round(radiusDist))
       break
     }
 
@@ -153,10 +156,10 @@ export function resizeShape(shape: Shape, handleType: string, newX: number, newY
       const ellipse = updated as Extract<Shape, { type: 'ellipse' }>
       if (handleType === 'top' || handleType === 'bottom') {
         const distY = Math.abs(newY - ellipse.y)
-        ellipse.radiusY = Math.max(1, distY)
+        ellipse.radiusY = Math.max(1, Math.round(distY))
       } else if (handleType === 'left' || handleType === 'right') {
         const distX = Math.abs(newX - ellipse.x)
-        ellipse.radiusX = Math.max(1, distX)
+        ellipse.radiusX = Math.max(1, Math.round(distX))
       }
       break
     }
