@@ -1,4 +1,4 @@
-export type ShapeType = 'pixel' | 'line' | 'rectangle' | 'circle' | 'arc' | 'ellipse' | 'triangle' | 'polygon' | 'filledRectangle' | 'filledCircle' | 'pieSlice'
+export type ShapeType = 'pixel' | 'line' | 'rectangle' | 'circle' | 'arc' | 'ellipse' | 'triangle' | 'polygon' | 'filledRectangle' | 'filledCircle' | 'pieSlice' | 'outtext'
 
 export interface BaseShape {
   id: string
@@ -94,5 +94,12 @@ export interface PieSlice extends BaseShape {
   endAngle: number
 }
 
-export type Shape = Pixel | Line | Rectangle | Circle | Arc | Ellipse | Triangle | Polygon | FilledRectangle | FilledCircle | PieSlice
+export interface OutText extends BaseShape {
+  type: 'outtext'
+  x: number
+  y: number
+  text: string
+}
+
+export type Shape = Pixel | Line | Rectangle | Circle | Arc | Ellipse | Triangle | Polygon | FilledRectangle | FilledCircle | PieSlice | OutText
 

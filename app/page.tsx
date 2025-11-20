@@ -52,6 +52,8 @@ export default function Home() {
         return { ...base, x: 150, y: 150, radius: 50 } as Shape
       case 'pieSlice':
         return { ...base, x: 150, y: 150, radius: 50, startAngle: 0, endAngle: 90 } as Shape
+      case 'outtext':
+        return { ...base, x: 100, y: 100, text: 'Hello' } as Shape
       default:
         throw new Error(`Unknown shape type: ${type}`)
     }

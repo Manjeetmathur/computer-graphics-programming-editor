@@ -580,6 +580,42 @@ export default function PropertyEditor({ shape, onUpdate }: PropertyEditorProps)
           </div>
         )
 
+      case 'outtext':
+        return (
+          <>
+            <div className="mb-2">
+              <label className="block text-xs font-medium text-gray-600 mb-1">Text</label>
+              <input
+                type="text"
+                value={localShape.text || ''}
+                onChange={(e) => handleChange('text', e.target.value)}
+                className="w-full px-2 py-1.5 text-xs sm:text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 touch-manipulation"
+                placeholder="Enter text"
+              />
+            </div>
+            <div className="mb-2">
+              <label className="block text-xs font-medium text-gray-600 mb-1">X</label>
+              <input
+                type="number"
+                step="1"
+                value={localShape.x}
+                onChange={(e) => handleChange('x', e.target.value)}
+                className="w-full px-2 py-1.5 text-xs sm:text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 touch-manipulation"
+              />
+            </div>
+            <div className="mb-2">
+              <label className="block text-xs font-medium text-gray-600 mb-1">Y</label>
+              <input
+                type="number"
+                step="1"
+                value={localShape.y}
+                onChange={(e) => handleChange('y', e.target.value)}
+                className="w-full px-2 py-1.5 text-xs sm:text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 touch-manipulation"
+              />
+            </div>
+          </>
+        )
+
       default:
         return null
     }

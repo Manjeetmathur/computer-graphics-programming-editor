@@ -83,6 +83,10 @@ export function getShapeHandles(shape: Shape): Handle[] {
         handles.push({ x: point.x, y: point.y, type: `point-${index}` })
       })
       break
+
+    case 'outtext':
+      handles.push({ x: shape.x, y: shape.y, type: 'position' })
+      break
   }
 
   return handles
@@ -192,6 +196,15 @@ export function resizeShape(shape: Shape, handleType: string, newX: number, newY
       const pixel = updated as Extract<Shape, { type: 'pixel' }>
       pixel.x = newX
       pixel.y = newY
+      break
+    }
+
+    case 'outtext': {
+      const outtext = updated as Extract<Shape, { type: 'outtext' }>
+      if (handleType === 'position') {
+        outtext.x = newX
+        outtext.y = newY
+      }
       break
     }
   }

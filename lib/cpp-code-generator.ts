@@ -119,6 +119,12 @@ int main()
       case 'pieSlice':
         code += `    pieslice(${shape.x}, ${shape.y}, ${shape.startAngle}, ${shape.endAngle}, ${shape.radius});\n`
         break
+      
+      case 'outtext': {
+        const text = (shape.text || '').replace(/"/g, '\\"')
+        code += `    outtextxy(${shape.x}, ${shape.y}, "${text}");\n`
+        break
+      }
     }
     
     code += '\n'

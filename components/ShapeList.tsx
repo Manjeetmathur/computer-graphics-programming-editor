@@ -47,6 +47,7 @@ export default function ShapeList({ shapes, selectedShapeId, onSelectShape, onDe
                   {shape.type === 'filledRectangle' && `(${shape.x1}, ${shape.y1}) → (${shape.x2}, ${shape.y2})`}
                   {shape.type === 'filledCircle' && `(${shape.x}, ${shape.y}) R:${shape.radius}`}
                   {shape.type === 'pieSlice' && `(${shape.x}, ${shape.y}) R:${shape.radius}`}
+                  {shape.type === 'outtext' && `"${shape.text}" at (${shape.x}, ${shape.y})`}
                 </div>
               </div>
               <button

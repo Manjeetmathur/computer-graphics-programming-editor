@@ -60,6 +60,9 @@ export class GraphicsRenderer {
       case 'pieSlice':
         this.renderPieSlice(shape)
         break
+      case 'outtext':
+        this.renderOutText(shape)
+        break
     }
   }
 
@@ -143,6 +146,12 @@ export class GraphicsRenderer {
     this.ctx.stroke()
   }
 
+  private renderOutText(shape: { x: number; y: number; text: string; color?: string }) {
+    this.ctx.font = '12px monospace'
+    this.ctx.textBaseline = 'top'
+    this.ctx.fillText(shape.text || '', shape.x, shape.y)
+  }
+
   renderSelection(shape: Shape) {
     const bounds = this.getShapeBounds(shape)
     const padding = 4
@@ -220,6 +229,17 @@ export class GraphicsRenderer {
           maxX: Math.max(...xs),
           maxY: Math.max(...ys),
         }
+      case 'outtext': {
+        // Estimate text bounds (approximate width based on character count)
+        const textWidth = (shape.text || '').length * 7 // Approximate 7px per character
+        const textHeight = 12 // Font size
+        return {
+          minX: shape.x,
+          minY: shape.y,
+          maxX: shape.x + textWidth,
+          maxY: shape.y + textHeight,
+        }
+      }
       default:
         return { minX: 0, minY: 0, maxX: 0, maxY: 0 }
     }
@@ -260,6 +280,9 @@ export class GraphicsRenderer {
         break
       case 'pixel':
         handles.push({ x: shape.x, y: shape.y, type: 'center' })
+        break
+      case 'outtext':
+        handles.push({ x: shape.x, y: shape.y, type: 'position' })
         break
       default:
         handles.push(

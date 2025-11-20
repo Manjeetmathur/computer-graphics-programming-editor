@@ -19,6 +19,7 @@ const shapes: { type: ShapeType; label: string; icon: string }[] = [
   { type: 'filledRectangle', label: 'Filled Rect', icon: '■' },
   { type: 'filledCircle', label: 'Filled Circle', icon: '●' },
   { type: 'pieSlice', label: 'Pie Slice', icon: '◓' },
+  { type: 'outtext', label: 'Text', icon: 'T' },
 ]
 
 export default function ShapePalette({ onSelectShape, selectedShape }: ShapePaletteProps) {

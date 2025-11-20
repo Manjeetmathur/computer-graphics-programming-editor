@@ -78,6 +78,13 @@ export function roundShapeCoordinates(shape: Shape): Shape {
       }))
       break
     }
+
+    case 'outtext': {
+      const outtext = rounded as Extract<Shape, { type: 'outtext' }>
+      outtext.x = Math.round(outtext.x)
+      outtext.y = Math.round(outtext.y)
+      break
+    }
   }
 
   return rounded

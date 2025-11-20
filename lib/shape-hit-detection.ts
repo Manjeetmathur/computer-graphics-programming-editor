@@ -43,6 +43,18 @@ export function isPointInShape(x: number, y: number, shape: Shape, tolerance = 5
     case 'polygon':
       return isPointInPolygon(x, y, shape.points, tolerance)
 
+    case 'outtext': {
+      // Estimate text bounds (approximate width based on character count)
+      const textWidth = (shape.text || '').length * 7 // Approximate 7px per character
+      const textHeight = 12 // Font size
+      return (
+        x >= shape.x - tolerance &&
+        x <= shape.x + textWidth + tolerance &&
+        y >= shape.y - tolerance &&
+        y <= shape.y + textHeight + tolerance
+      )
+    }
+
     default:
       return false
   }
@@ -191,6 +203,18 @@ export function getShapeBounds(shape: Shape): { minX: number; minY: number; maxX
         maxX: Math.max(...xs),
         maxY: Math.max(...ys),
       }
+
+    case 'outtext': {
+      // Estimate text bounds (approximate width based on character count)
+      const textWidth = (shape.text || '').length * 7 // Approximate 7px per character
+      const textHeight = 12 // Font size
+      return {
+        minX: shape.x,
+        minY: shape.y,
+        maxX: shape.x + textWidth,
+        maxY: shape.y + textHeight,
+      }
+    }
 
     default:
       return { minX: 0, minY: 0, maxX: 0, maxY: 0 }
